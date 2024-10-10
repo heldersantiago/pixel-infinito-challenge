@@ -4,6 +4,7 @@ import com.example.pixel.entities.Book;
 import com.example.pixel.repositories.BookRepository;
 import com.example.pixel.services.interfaces.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +22,6 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void create(Book entity) {
-
     }
 
     @Override
@@ -36,6 +36,5 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(Long id) {
-
     }
 }

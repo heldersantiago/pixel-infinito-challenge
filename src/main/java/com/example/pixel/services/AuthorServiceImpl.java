@@ -4,6 +4,7 @@ import com.example.pixel.entities.Author;
 import com.example.pixel.repositories.AuthorRepository;
 import com.example.pixel.services.interfaces.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
