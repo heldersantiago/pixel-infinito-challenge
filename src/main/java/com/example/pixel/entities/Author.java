@@ -2,6 +2,7 @@ package com.example.pixel.entities;
 
 import com.example.pixel.enums.BookGenre;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    @NotBlank(message = "author name is required")
     private String name;
     private String biography;
 

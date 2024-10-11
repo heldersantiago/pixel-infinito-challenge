@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -24,7 +25,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Author create(Author author) {
-        if (author.getName().isEmpty()) {
+        if (Objects.equals(author.getName(), null)) {
             throw new RuntimeException("Author name is required");
         }
         return authorRepository.save(author);
@@ -48,6 +49,7 @@ public class AuthorServiceImpl implements AuthorService {
                     field.set(existingAuthor, value);
                 }
             } catch (NoSuchFieldException e) {
+                throw new RuntimeException("No fields provided");
 
             } catch (IllegalAccessException ignored) {
 
