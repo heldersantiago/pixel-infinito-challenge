@@ -1,13 +1,15 @@
 package com.example.pixel.services;
 
 import com.example.pixel.entities.Author;
+import com.example.pixel.exceptions.ResourceNotFoundException;
 import com.example.pixel.repositories.AuthorRepository;
 import com.example.pixel.services.interfaces.AuthorService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -17,26 +19,46 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<Author> getAll() {
-        return List.of();
+        return authorRepository.findAll();
     }
 
     @Override
-    public void create(Author entity) {
-
+    public Author create(Author author) {
+        if (author.getName().isEmpty()) {
+            throw new RuntimeException("Author name is required");
+        }
+        return authorRepository.save(author);
     }
 
     @Override
     public Optional<Author> getById(Long id) {
-        return Optional.empty();
+        Author author = authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Author not found"));
+        return Optional.ofNullable(author);
     }
 
     @Override
-    public Author update(Long id, Author entity) {
-        return null;
+    public Author update(Long id, Map<String, Object> updates) {
+        Author existingAuthor = getById(id).orElseThrow(() -> new ResourceNotFoundException("Author not found"));
+
+        updates.forEach((key, value) -> {
+            try {
+                Field field = Author.class.getDeclaredField(key);
+                field.setAccessible(true);
+                if (value != null && field.getType().isAssignableFrom(value.getClass())) {
+                    field.set(existingAuthor, value);
+                }
+            } catch (NoSuchFieldException e) {
+
+            } catch (IllegalAccessException ignored) {
+
+            }
+        });
+        return authorRepository.save(existingAuthor);
     }
 
     @Override
     public void delete(Long id) {
-
+        Author author = authorRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Author not found"));
+        authorRepository.deleteById(id);
     }
 }

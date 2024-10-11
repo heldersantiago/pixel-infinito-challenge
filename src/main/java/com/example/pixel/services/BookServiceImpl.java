@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,7 +22,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void create(Book entity) {
+    public Book create(Book entity) {
+        return entity;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book update(Long id, Book entity) {
+    public Book update(Long id, Map<String, Object> updates) {
         return null;
     }
 
