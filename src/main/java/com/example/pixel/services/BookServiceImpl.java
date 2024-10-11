@@ -5,6 +5,8 @@ import com.example.pixel.repositories.BookRepository;
 import com.example.pixel.services.interfaces.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +19,8 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
     @Override
-    public List<Book> getAll() {
-        return List.of();
+    public Page<Book> getAll(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     @Override

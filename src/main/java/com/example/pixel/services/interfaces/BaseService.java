@@ -1,13 +1,15 @@
 package com.example.pixel.services.interfaces;
 
 import com.example.pixel.entities.Author;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public interface BaseService<T> {
-    List<T> getAll();
+    Page<T> getAll(Pageable pageable);
 
     T create(T entity);
 

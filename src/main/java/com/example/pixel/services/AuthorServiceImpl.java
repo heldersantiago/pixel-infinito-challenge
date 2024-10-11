@@ -5,6 +5,8 @@ import com.example.pixel.exceptions.ResourceNotFoundException;
 import com.example.pixel.repositories.AuthorRepository;
 import com.example.pixel.services.interfaces.AuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -19,8 +21,8 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository authorRepository;
 
     @Override
-    public List<Author> getAll() {
-        return authorRepository.findAll();
+    public Page<Author> getAll(Pageable pageable) {
+        return authorRepository.findAll(pageable);
     }
 
     @Override

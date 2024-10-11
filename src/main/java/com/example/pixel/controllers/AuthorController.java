@@ -1,6 +1,7 @@
 package com.example.pixel.controllers;
 
 import com.example.pixel.dtos.AuthorDTO;
+import com.example.pixel.dtos.PageResponseDTO;
 import com.example.pixel.entities.Author;
 import com.example.pixel.mappers.AuthorMapper;
 import com.example.pixel.services.interfaces.AuthorService;
@@ -11,6 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,12 +46,32 @@ public class AuthorController {
     @Operation(summary = "Get all authors")
     @ApiResponses(value = {@ApiResponse(responseCode = "200")})
     @GetMapping
-    public ResponseEntity<List<AuthorDTO>> getAuthors() {
-        List<Author> authors = authorService.getAll();
-        List<AuthorDTO> authorDTOs = authors.stream()
-                .map(authorMapper::toDto)
-                .toList();
-        return ResponseEntity.ok(authorDTOs);
+    public ResponseEntity<PageResponseDTO<AuthorDTO>> getAuthors(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        // Determine the sort direction
+        Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // Create a pageable object with the page, size, and sort parameters
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Author> authorsPage = authorService.getAll(pageable);
+
+        // Criando um DTO de resposta
+        PageResponseDTO<AuthorDTO> response = new PageResponseDTO<>(
+                authorsPage.getContent()
+                        .stream()
+                        .map(authorMapper::toDto)
+                        .collect(Collectors.toList()),
+                authorsPage.getNumber(),
+                authorsPage.getSize(),
+                authorsPage.getTotalElements(),
+                authorsPage.getTotalPages()
+        );
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Get an author by id")
